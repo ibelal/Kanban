@@ -121,6 +121,23 @@ function App() {
     console.log("remove card", bid, cid);
   };
 
+  const updateCard = (bid, cid, card) => {
+    const index = boards.findIndex((item) => item.id === bid);
+    if (index < 0) return;
+
+    const tempBoards = [...boards];
+    const cards = tempBoards[index].cards;
+
+    const cardIndex = cards.findIndex((item) => item.id === cid);
+    if (cardIndex < 0) return;
+
+    tempBoards[index].cards[cardIndex] = card;
+
+    setBoards(tempBoards);
+    // api to update card
+    console.log("update card", bid, cid, card);
+  };
+
   return (
     <div className="app">
       <div className="app_nav">
@@ -134,6 +151,7 @@ function App() {
             removeBoard={() => removeBoard(item.id)}
             addCard={addCardHandler}
             removeCard={removeCard}
+            updateCard={updateCard}
           />
         ))}
         <div className="app_boards_last">
