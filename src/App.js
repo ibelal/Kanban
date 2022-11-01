@@ -64,6 +64,11 @@ function App() {
     JSON.parse(localStorage.getItem("kanban")) || initialData
   );
 
+  const [targetCard, setTargetCard] = useState({
+    bid: "",
+    cid: "",
+  });
+
   useEffect(() => {
     // run api to fetch data and store in localstorage
     localStorage.setItem("kanban", JSON.stringify(boards));
@@ -138,6 +143,47 @@ function App() {
     console.log("update card", bid, cid, card);
   };
 
+  const dragEnded = (bid, cid) => {
+    let source_boardIndex,
+      source_cardIndex,
+      target_boardIndex,
+      target_cardIndex;
+    source_boardIndex = boards.findIndex((item) => item.id === bid);
+    if (source_boardIndex < 0) return;
+
+    source_cardIndex = boards[source_boardIndex]?.cards?.findIndex(
+      (item) => item.id === cid
+    );
+    if (source_cardIndex < 0) return;
+
+    target_boardIndex = boards.findIndex((item) => item.id === targetCard.bid);
+    if (target_boardIndex < 0) return;
+
+    target_cardIndex = boards[target_boardIndex]?.cards?.findIndex(
+      (item) => item.id === targetCard.cid
+    );
+    if (target_cardIndex < 0) return;
+
+    const tempBoards = [...boards];
+    const sourceCard = tempBoards[source_boardIndex].cards[source_cardIndex];
+    tempBoards[source_boardIndex].cards.splice(source_cardIndex, 1);
+    tempBoards[target_boardIndex].cards.splice(target_cardIndex, 0, sourceCard);
+    setBoards(tempBoards);
+
+    setTargetCard({
+      bid: "",
+      cid: "",
+    });
+  };
+
+  const dragEntered = (bid, cid) => {
+    if (targetCard.cid === cid) return;
+    setTargetCard({
+      bid,
+      cid,
+    });
+  };
+
   return (
     <div className="app">
       <div className="app_nav">
@@ -152,6 +198,8 @@ function App() {
             addCard={addCardHandler}
             removeCard={removeCard}
             updateCard={updateCard}
+            dragEnded={dragEnded}
+            dragEntered={dragEntered}
           />
         ))}
         <div className="app_boards_last">
