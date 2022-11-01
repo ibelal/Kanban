@@ -79,6 +79,15 @@ function App() {
     setBoards(tempBoards);
   };
 
+  const removeBoard = (id) => {
+    const index = boards.findIndex((item) => item.id === id);
+    if (index < 0) return;
+
+    const tempBoards = [...boards];
+    tempBoards.splice(index, 1);
+    setBoards(tempBoards);
+  };
+
   return (
     <div className="app">
       <div className="app_nav">
@@ -86,7 +95,11 @@ function App() {
       </div>
       <div className="app_boards">
         {boards.map((item) => (
-          <Board key={item.id} board={item} />
+          <Board
+            key={item.id}
+            board={item}
+            removeBoard={() => removeBoard(item.id)}
+          />
         ))}
         <div className="app_boards_last">
           <Editable
