@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 
 import "./App.css";
+import Board from "./Components/Board/Board";
+import Editable from "./Components/Editabled/Editable";
 
 const initialData = [
   {
@@ -66,10 +68,36 @@ function App() {
     // run api to fetch data and store in localstorage
     localStorage.setItem("kanban", JSON.stringify(boards));
   }, [boards]);
+
+  const addboardHandler = (name) => {
+    const tempBoards = [...boards];
+    tempBoards.push({
+      id: Date.now() + Math.random() * 2,
+      title: name,
+      cards: [],
+    });
+    setBoards(tempBoards);
+  };
+
   return (
     <div className="app">
       <div className="app_nav">
         <h1>Kanban Board</h1>
+      </div>
+      <div className="app_boards">
+        {boards.map((item) => (
+          <Board key={item.id} board={item} />
+        ))}
+        <div className="app_boards_last">
+          <Editable
+            displayClass="app_boards_add-board"
+            editClass="app_boards_add-board_edit"
+            placeholder="Enter Board Name"
+            text="Add Board"
+            buttonText="Add Board"
+            onSubmit={addboardHandler}
+          />
+        </div>
       </div>
     </div>
   );
