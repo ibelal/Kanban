@@ -88,6 +88,39 @@ function App() {
     setBoards(tempBoards);
   };
 
+  const addCardHandler = (id, title) => {
+    const index = boards.findIndex((item) => item.id === id);
+    if (index < 0) return;
+
+    const tempBoards = [...boards];
+    const cardData = {
+      id: Date.now() + Math.random() * 2,
+      title,
+      labels: [],
+      tasks: [],
+    };
+    tempBoards[index].cards.push(cardData);
+    setBoards(tempBoards);
+    // api to add card
+    console.log("new card added", cardData);
+  };
+
+  const removeCard = (bid, cid) => {
+    const index = boards.findIndex((item) => item.id === bid);
+    if (index < 0) return;
+
+    const tempBoards = [...boards];
+    const cards = tempBoards[index].cards;
+
+    const cardIndex = cards.findIndex((item) => item.id === cid);
+    if (cardIndex < 0) return;
+
+    cards.splice(cardIndex, 1);
+    setBoards(tempBoards);
+    // api to remove card
+    console.log("remove card", bid, cid);
+  };
+
   return (
     <div className="app">
       <div className="app_nav">
@@ -99,6 +132,8 @@ function App() {
             key={item.id}
             board={item}
             removeBoard={() => removeBoard(item.id)}
+            addCard={addCardHandler}
+            removeCard={removeCard}
           />
         ))}
         <div className="app_boards_last">
