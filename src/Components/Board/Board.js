@@ -32,7 +32,15 @@ function Board(props) {
           )}
         </div>
       </div>
-      <div className="board_cards custom-scroll">
+      <div
+        className="board_cards custom-scroll"
+        draggable
+        onDragEnter={() =>
+          props.board?.cards.length === 0
+            ? props.dragEntered(props?.board?.id, 0)
+            : null
+        }
+      >
         {props.board?.cards?.map((item) => (
           <Card
             key={item.id}
