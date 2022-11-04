@@ -109,12 +109,20 @@ function App() {
     target_cardIndex = boards[target_boardIndex]?.cards?.findIndex(
       (item) => item.id === targetCard.cid
     );
-    if (target_cardIndex < 0) return;
 
     const tempBoards = [...boards];
     const sourceCard = tempBoards[source_boardIndex].cards[source_cardIndex];
     tempBoards[source_boardIndex].cards.splice(source_cardIndex, 1);
-    tempBoards[target_boardIndex].cards.splice(target_cardIndex, 0, sourceCard);
+
+    if (target_cardIndex === 0 || target_cardIndex < 0) {
+      tempBoards[target_boardIndex].cards.splice(0, 0, sourceCard);
+    } else {
+      tempBoards[target_boardIndex].cards.splice(
+        target_cardIndex,
+        0,
+        sourceCard
+      );
+    }
     setBoards(tempBoards);
 
     setTargetCard({
@@ -124,7 +132,6 @@ function App() {
   };
 
   const dragEntered = (bid, cid) => {
-    if (targetCard.cid === cid) return;
     setTargetCard({
       bid,
       cid,
@@ -147,6 +154,7 @@ function App() {
             updateCard={updateCard}
             dragEnded={dragEnded}
             dragEntered={dragEntered}
+            // dragBoardEntered={dragBoardEntered}
           />
         ))}
         <div className="app_boards_last">
